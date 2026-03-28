@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Healing History Dashboard</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; /* <-- Keeps sidebar fixed */
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh; /* full height */
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #ecf0f1;
+      text-decoration: none;
+      font-size: 1.1rem;
+      margin: 10px 0;
+      display: block;
+      transition: color 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #1abc9c;
+    }
+
+    /* Highlight active link */
+    .sidebar a.active {
+      color: #1abc9c;
+      font-weight: bold;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 240px; /* space for fixed sidebar */
+      padding: 20px;
+      flex: 1;
+      text-align: center;
+    }
+
+    header {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff; /* changed from blue to white */
+    margin-bottom: 20px;
+    background-color: #007bff; /* add a blue background to highlight header */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .chart-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+      width: 80%;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 80%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>🩹 Menu</h2>
+    <a href="/">🏠 Home</a>
+    <a href="/history" class="active">📊 View Healing History</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header>📊 Healing History Dashboard</header>
+
+    <div class="chart-container">
+      <div id="healingChart"></div>
+    </div>
+
+    <h3>🩹 Healing Log Data</h3>
+    <table>
+      <tr>
+        <th>Date & Time</th>
+        <th>Healing Percent (%)</th>
+      </tr>
+      {% for item in healing_data %}
+      <tr>
+        <td>{{ item.timestamp }}</td>
+        <td>{{ item.healing_percent }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <script>
+    const healingData = JSON.parse('{{ healing_data | tojson | safe }}');
+    const timestamps = healingData.map(d => d.timestamp);
+    const percentages = healingData.map(d => d.healing_percent);
+
+    const trace = {
+      x: timestamps,
+      y: percentages,
+      mode: 'lines+markers',
+      name: 'Healing Progress',
+      line: { shape: 'spline', color: '#007bff', width: 3 },
+      marker: { size: 8, color: '#007bff' }
+    };
+
+    const layout = {
+      title: 'Wound Healing Progress Over Time',
+      xaxis: { title: 'Date & Time' },
+      yaxis: { title: 'Healing Percent (%)', range: [0, 100] },
+      margin: { t: 50, l: 60, r: 20, b: 60 }
+    };
+
+    Plotly.newPlot('healingChart', [trace], layout);
+  </script>
+</body>
+</html>

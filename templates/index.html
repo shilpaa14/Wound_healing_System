@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Wound Healing Estimator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100vh;
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #ecf0f1;
+      text-decoration: none;
+      font-size: 1.1rem;
+      margin: 10px 0;
+      display: block;
+      transition: color 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #1abc9c;
+    }
+
+    .sidebar a.active {
+      color: #1abc9c;
+      font-weight: bold;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 240px;
+      padding: 20px;
+      flex: 1;
+      text-align: center;
+    }
+
+    header {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff; /* changed from blue to white */
+    margin-bottom: 20px;
+    background-color: #007bff; /* add a blue background to highlight header */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+
+
+    .container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .left-panel, .right-panel {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 45%;
+      min-width: 350px;
+    }
+
+    .controls button, #predictBtn {
+      margin: 5px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .controls button:hover, #predictBtn:hover {
+      background-color: #0056b3;
+    }
+
+    canvas {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    #healedImage {
+      display: none;
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>🩹 Menu</h2>
+    <a href="/" class="active">🏠 Home</a>
+    <a href="/history">📊 View Healing History</a>
+  </div>
+
+  
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header>🩹 Wound Healing Estimator</header>
+
+    <div class="container">
+
+      <!-- 🩹 LEFT SIDE -->
+      <div class="left-panel">
+        <h2>🩹 Upload & Analyze</h2>
+
+        <input type="file" id="imageUpload" accept="image/*">
+
+        <div class="controls">
+          <button id="moveBtn">Move</button>
+          <button id="resizeBtn">Resize</button>
+          <button id="zoomInBtn">Zoom +</button>
+          <button id="zoomOutBtn">Zoom -</button>
+        </div>
+
+        <canvas id="woundCanvas" width="400" height="400"></canvas>
+        <br>
+        <button id="predictBtn">Predict Healing</button>
+      </div>
+
+      <!-- 🧾 RIGHT SIDE -->
+      <div class="right-panel">
+        <h3>Prediction Results</h3>
+        <div id="result"></div>
+
+        <div id="extraInfo" style="margin-top: 20px;">
+          <h3 id="statusText" style="color: #333;"></h3>
+          <p id="adviceText" style="font-size: 1rem; color: #444;"></p>
+
+          <div id="healedImageContainer" style="margin-top: 10px;">
+            <h4>Simulating Healing Image:</h4>
+            <img id="healedImage" src="" alt="Healed simulation preview">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
